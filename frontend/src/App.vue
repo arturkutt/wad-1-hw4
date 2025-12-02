@@ -1,48 +1,50 @@
 <template>
   <div id="app">
-    <header class="site-header">
-      <nav class="nav-bar">
-        <router-link to="/home" v-if="isLogged" class="nav-link">Home</router-link>
-        <router-link to="/add-post" v-if="isLogged" class="nav-link">Add Post</router-link>
-        <router-link to="/contact" class="nav-link">Contact</router-link>
-        <div class="right">
-          <button v-if="isLogged" @click="logout" class="btn">Logout</button>
-          <router-link v-else to="/login" class="nav-link">Login</router-link>
-        </div>
-      </nav>
-    </header>
+    <!-- Header näidatakse ainult kui kasutaja on sisse logitud -->
+    <AppHeader v-if="isLogged" @logout="logout" />
 
     <main class="content">
       <router-view />
     </main>
 
-    <footer class="site-footer">
-      <p>WAD HW4 – Frontend</p>
-    </footer>
+    <AppFooter />
   </div>
 </template>
 
 <script>
+import AppHeader from "./components/Header.vue";
+import AppFooter from "./components/Footer.vue";
+import api from "./services/api";
+
 export default {
-  name: 'App',
+  name: "App",
+  components: {
+    AppHeader,
+    AppFooter
+  },
   computed: {
     isLogged() {
-      return !!localStorage.getItem('token');
+      return !!localStorage.getItem("token");
     }
   },
   methods: {
     logout() {
-      localStorage.removeItem('token');
-      // remove axios header
-      const api = require('./services/api').default;
-      api.setToken(null);
-      this.$router.push('/login');
+      localStorage.removeItem("token");
+      api.setToken(null);   // eemaldab axios päise
+      this.$router.push("/login");
     }
   }
 };
 </script>
 
 <style>
-/* small local adjustments if needed, global styles are in assets/main.css */
-.right { margin-left: auto; }
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  flex: 1;
+  padding: 20px;
+}
 </style>

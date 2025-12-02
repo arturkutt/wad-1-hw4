@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../components/Login.vue';
-import Signup from '../components/Signup.vue';
-import Home from '../components/Home.vue';
-import AddPost from '../components/AddPost.vue';
-import PostDetail from '../components/PostDetail.vue';
-import Contact from '../components/Contact.vue';
+import Login from '../views/Login.vue';
+import Signup from '../views/Signup.vue';
+import Home from '../views/Home.vue';
+import AddPost from '../views/AddPost.vue';
+import PostDetail from '../views/PostDetail.vue';
+import Contact from '../views/Contact.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
