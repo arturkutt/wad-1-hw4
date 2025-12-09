@@ -10,12 +10,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.site-footer {
-  padding: 12px 16px;
-  background: #f1f5f9;
-  color: #444;
-  text-align: center;
-  font-size: 14px;
-}
-</style>
