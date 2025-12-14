@@ -35,6 +35,7 @@ export default {
         const res = await api.auth.signup({ email: this.email, password: this.password });
         const token = res.data.token;
         localStorage.setItem('token', token);
+        window.dispatchEvent(new Event("auth-changed"));
         api.setToken(token);
         this.$router.push('/home');
       } catch (err) {

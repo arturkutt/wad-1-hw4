@@ -15,13 +15,14 @@
 </template>
 
 <script>
-export default {
-  name: "AppHeader",
-  computed: {
-    isLogged() {
-      return !!localStorage.getItem('token');
+  export default {
+    name: "AppHeader",
+    props: {
+      isLogged: {
+        type: Boolean,
+        required: true
+      }
     }
-  }
-};
-</script>
+  };
+  </script>
 

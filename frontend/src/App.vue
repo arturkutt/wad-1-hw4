@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <!-- Header näidatakse ainult kui kasutaja on sisse logitud -->
-    <AppHeader v-if="isLogged" @logout="logout" />
+    <!-- kui tahad, et header kaoks siis kui pole logged in, jäta v-if alles -->
+    <AppHeader :isLogged="isLogged" @logout="logout" />
 
     <main class="content">
       <router-view />
@@ -18,19 +18,36 @@ import api from "./services/api";
 
 export default {
   name: "App",
-  components: {
-    AppHeader,
-    AppFooter
+  components: { AppHeader, AppFooter },
+
+  data() {
+    return {
+      token: localStorage.getItem("token") || ""
+    };
   },
   computed: {
     isLogged() {
-      return !!localStorage.getItem("token");
+      return !!this.token;
     }
   },
+  mounted() {
+    window.addEventListener("auth-changed", this.syncToken);
+    window.addEventListener("storage", this.syncToken);
+    this.syncToken();
+  },
+  beforeUnmount() {
+    window.removeEventListener("auth-changed", this.syncToken);
+    window.removeEventListener("storage", this.syncToken);
+  },
   methods: {
+    syncToken() {
+      this.token = localStorage.getItem("token") || "";
+      api.setToken(this.token || null);
+    },
     logout() {
       localStorage.removeItem("token");
-      api.setToken(null);   // eemaldab axios päise
+      api.setToken(null);
+      this.syncToken();
       this.$router.push("/login");
     }
   }
@@ -42,7 +59,6 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  
 }
 .content {
   flex: 1;

@@ -18,7 +18,9 @@
       </div>
     </form>
 
-    <p v-if="message" class="message">{{ message }}</p>
+    <div v-if="message" class="error-box" role="alert">
+      {{ message }}
+    </div>
   </section>
 </template>
 
@@ -32,17 +34,38 @@ export default {
   },
   methods: {
     async onSubmit() {
+      this.message = "";
       try {
         const res = await api.auth.login({ email: this.email, password: this.password });
         const token = res.data.token;
         localStorage.setItem('token', token);
+        window.dispatchEvent(new Event("auth-changed"));
         api.setToken(token);
         this.$router.push('/home');
       } catch (err) {
-        this.message = err.response?.data?.error || 'Login failed';
+        const status = err?.response?.status;
+        const backendMsg = err?.response?.data?.error || err?.response?.data?.message;
+
+        if (status === 401 || status === 403) {
+          this.message = "Incorrect login info.";
+        } else {
+          this.message = backendMsg || "Login failed";
+        }
       }
     }
   }
 };
 </script>
+
+<style scoped>
+  .error-box {
+    margin-top: 16px;
+    padding: 10px 14px;
+    border: 1px solid #f5a3a3;
+    background: #ffe5e5;
+    color: #b00020;
+    border-radius: 6px;
+    display: block;
+  }
+  </style>
 
